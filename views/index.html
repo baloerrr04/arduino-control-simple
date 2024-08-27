@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Control</title>
+
+    <style>
+        body {
+            overflow: hidden;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .on {
+            background-color: greenyellow;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .on:hover {
+            opacity: 10;
+        }
+
+        .off {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io()
+
+    socket.on("data", ({data}) => {
+        let component = document.getElementById("data");
+        component.textContent = "Distances from ultrasonic => " + data
+    })
+
+    function Arduino(data) {
+        fetch("http://localhost:3000/arduinoApi", {
+            method: "POST",
+            body: JSON.stringify({data}),
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        })
+    }
+</script>
+<body>
+    <p id="data"></p>
+    <button class="on" onclick="Arduino('1')">On</button>
+    <button class="off" onclick="Arduino('2')">Off</button>
+</body>
+</html>
